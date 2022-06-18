@@ -9,72 +9,18 @@
     <title>Parrots Card Game</title>
 </head>
 <body>
-        <div class="titulo">
-            <span>PARROT CARD GAME</span>
-        </div>
-    <div id="container">
-      
-            <div class="card" id="card0">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card1">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card2">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card3">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card4">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card5">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card6">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card7">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card8">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card9">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card10">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card11">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card12">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-            <div class="card" id="card13">
-                <div class="face back"></div>
-                <div class="face front"></div>
-            </div>
-
-
-
+    <div class="titulo">
+        <span>PARROT CARD GAME</span> <br/>
     </div>
+    <div class="max-width">
+        <button onclick="start();" class="bg-green">Iniciar</button>
+        <button onclick="pause();" class="bg-yellow">Pausar</button>
+        <button onclick="stop();" class="bg-red">Parar</button>
+        <h1 id="counter">00:00:00</h1>
+        
+    </div>
+    <div id="container"></div>
 
-    <script src="javascript.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
