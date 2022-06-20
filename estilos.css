@@ -7,7 +7,12 @@
 }
 body{
     background:#EEF9BF;
-    height: 100px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
 }
 .titulo{
     display: flex;
@@ -21,6 +26,7 @@ body{
     margin:35px auto;
 }
 .titulo span{
+    display:inline-block;
     font-weight: 700px;
     font-size: 56px;
     color: #75B79E;
@@ -32,7 +38,6 @@ body{
     box-sizing: border-box;
     box-shadow: 0 0 1px #EEF9BF;
     text-align: end;
-    margin-top:0px;
 }
 
 h1 {
@@ -75,11 +80,6 @@ button:hover{
     justify-content: space-around;
     align-items: stretch;
     align-content: normal;
-    width: calc(var(--largura) * 5);
-    height:495px;
-    
-    margin:10px auto;
-
 }
 
 .card{
@@ -88,9 +88,9 @@ button:hover{
     width: var(--largura);
     height: var(--altura);
     perspective: 600px;
-    margin: 0 auto;
     border-radius: 5px; /*   
     background: #A7E9AF;*/
+    margin:5px 5px;
 }
 .flip{
     width: 100%;
@@ -121,7 +121,7 @@ button:hover{
 @media (max-width: 768px) {
     body{
         min-height: 100vh;
-        height: calc(var(--altura)*14);
+        max-height: calc((var(--altura)*14)+200);
     }
     .titulo{
         text-align: center;
@@ -137,15 +137,19 @@ button:hover{
         width: 100%;
         min-height: 495px;
         margin:10px auto;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
     .card{
-        width: calc( var(--largura) / 2 );
-        height: calc( var(--altura) / 2 );
+        width: var(--largura);
+        height:  var(--altura) ;
         perspective: 600px;
+        margin: 12px auto;
     }
     .front img, .back img {
-        width: calc( var(--largura) / 2 );
-        height: calc( var(--altura) / 2 );
+        width: var(--largura)  ;
+        height:  var(--altura)  ;
     }
 
 }

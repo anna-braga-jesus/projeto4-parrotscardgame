@@ -25,11 +25,6 @@ function start(){
     cron = setInterval(() => { timer(); }, tempo);
 
 }
-
-function pause(){
-    clearInterval(cron);
-}
-
 function stop(){
     clearInterval(cron);
     hh = 0;
@@ -63,18 +58,19 @@ function timer(){
  * Recebe as cartas do jogo
  * [ 'nome', img, false=virada ou não ]
  */
-var cards = new Array (  );
-var collection = {
-    0: { nome:'Panda',  imagem:'0.gif', inGame: false},   
-    1: { nome:'Gorila', imagem:'1.gif', inGame: false },
-    2: { nome:'Cachorro', imagem:'2.gif', inGame: false },
-    3: { nome:'Vaco',   imagem:'3.gif', inGame: false },
-    4: { nome:'Morcego', imagem:'4.gif', inGame: false },
-    5: { nome:'Dragão', imagem:'5.gif', inGame: false },
-    6: { nome:'Polvo', imagem:'6.gif', inGame: false }
-}
+let cards = [];
+var collection = [
+    { partidas: 0, countCartasViradas: 0, record: 0 },
+    { nome:'Panda',  imagem:'0.gif', inGame: false},   
+    { nome:'Gorila', imagem:'1.gif', inGame: false },
+    { nome:'Cachorro', imagem:'2.gif', inGame: false },
+    { nome:'Vaco',   imagem:'3.gif', inGame: false },
+    { nome:'Morcego', imagem:'4.gif', inGame: false },
+    { nome:'Dragão', imagem:'5.gif', inGame: false },
+    { nome:'Polvo', imagem:'6.gif', inGame: false }
+]
 
-var engine_selecionado = [];
+const engine_selecionado = [];
 engine_selecionado[0] = '';
 engine_selecionado[1] = '';
 // caso 2, o jogo testará (this[0] == this[1])
@@ -90,96 +86,133 @@ var quantidade_cartas = 0;
 
 // CONFIGURAÇÕES DO JOGO - ESCOLHA QUANTIDADE DE CARTAS.
 while( !starting_game ){
-    var n_c = Number(prompt( 'Com quantas cartas você deseja jogar? (De 4 a 14 cartas)' ))
-    if ( n_c <= 14 && n_c >= 4 ){ 
-        if( n_c % 2 === 0 ){
-            quantidade_cartas = n_c;
-            starting_game = true;
-        } else {
-            starting_game = false
+    ConfigureGame();
+
+function ConfigureGame(){
+        var n_c = Number(prompt( 'Com quantas cartas você deseja jogar? (De 4 a 14 cartas)' ))
+        if ( n_c <= 14 && n_c >= 4 ){ 
+            if( n_c % 2 === 0 ){
+                quantidade_cartas = n_c;
+                starting_game = true;
+            } else {
+                starting_game = false
+            }
         }
     }
 }
-
 
 /**
  * Responsavel por renderizar as cartas no DOM.
  */
 function Render(){
-    createCard()
+    start();
     var dom = document.querySelector( "#container" );
+    dom.innerHTML = '';
+    
+    createCard();
     cards.forEach ( (x, y)=>{
-        const card = document.createElement('div');  
-        const card_flip = document.createElement('div');
-        const card_front = document.createElement('div');
-        const card_back = document.createElement('div');
-        const imagem_1 = document.createElement('img');
-        const imagem_2 = document.createElement('img');
-        card.className = 'card';
-        card_flip.className = 'flip'; 
-        card_front.className = 'front';
-        card_back.className = 'back';
-
-        imagem_1.src = './images/verso.png';
-        imagem_2.src = './images/' + x.imagem;
-        
-        card.dataset.cid = y;
-        // ao clicar na carta, a verificação com a array engine_selecionado deverá ocorrer.
-        card_flip.onclick = function(){
-            var index =  y;
-            this.style.transform = 'rotateY(180deg)';
-
-                switch (engine_selecionado[2]) {
-                    case 0:
-                        engine_selecionado[2] = 1;
-                        engine_selecionado[0] = [cards[index].nome, index]
-                        test(engine_selecionado[0][0] +" - "+ engine_selecionado[1][0]);
-                        break;
-                    case 1:
-                        test(engine_selecionado[0][0] +' - '+ engine_selecionado[1][0]);
-                        engine_selecionado[1] = [cards[index].nome, index]
-                        if ( engine_selecionado[0][0] == engine_selecionado[1][0] ){
-                            cards.forEach( (xxx, yyy)=>{
-                                if ( xxx.nome == engine_selecionado[0][0] ){
-                                    xxx.virado = true;
-                                }
-                            } )
-                            engine_selecionado[0] = '';
-                            engine_selecionado[1] = '';
-                            engine_selecionado[2] = 0;
-                        } 
-                        else if ( !(engine_selecionado[0][0] == engine_selecionado[1][0]) ) {
-                            var todasCards = document.querySelectorAll( '.card' );
-                            cards.forEach( (xxx, yyy)=>{
-                                if ( xxx.virado === false ){
-                                    todasCards.forEach((c)=>{
-                                        if( c.dataset.cid == yyy  ){
-                                            setTimeout( function(){
-                                                c.querySelector('.flip').style.transform = 'rotateY(0deg)';
-                                            }, 1000)
-                                        }
-                                    })
-                                } 
+        if(x.nome){
+            const card = document.createElement('div');  
+            const card_flip = document.createElement('div');
+            const card_front = document.createElement('div');
+            const card_back = document.createElement('div');
+            const imagem_1 = document.createElement('img');
+            const imagem_2 = document.createElement('img');
+            card.className = 'card';
+            card_flip.className = 'flip'; 
+            card_front.className = 'front';
+            card_back.className = 'back';
+    
+            imagem_1.src = './images/verso.png';
+            imagem_2.src = './images/' + x.imagem;
+            
+            card.dataset.cid = y;
+            // ao clicar na carta, a verificação com a array engine_selecionado deverá ocorrer.
+            card_flip.onclick = function(){
+                var index =  y;
+                this.style.transform = 'rotateY(180deg)';
+                collection[0].countCartasViradas++;
+    
+                    switch (engine_selecionado[2]) {
+                        case 0:
+                            engine_selecionado[2] = 1;
+                            engine_selecionado[0] = [cards[index].nome, index]
+                            break;
+                        case 1:
+                            engine_selecionado[1] = [cards[index].nome, index]
+                            // se as cartas são iguais
+                            if ( engine_selecionado[0][0] == engine_selecionado[1][0] ){
+                                cards.forEach( (xxx, yyy)=>{
+                                    if ( xxx.virado!=undefined && xxx.nome == engine_selecionado[0][0] ){
+                                        xxx.virado = true;
+                                    }
+                                } )
+                                engine_selecionado[0] = '';
+                                engine_selecionado[1] = '';
+                                engine_selecionado[2] = 0;
+    
+                                let cartasViradas = 0;
+                                cards.forEach((c)=>{
+                                    if(c.virado!=undefined && c.virado==true){ 
+                                        cartasViradas++
+                                    }
+                                })
                                 
-                            engine_selecionado[0] = '';
-                            engine_selecionado[1] = '';
-                            engine_selecionado[2] = 0;
-                            } )
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                
+                                if( cartasViradas == quantidade_cartas ){
+                                    var format = (hh < 10 ? '0' + hh : hh) + ':' + (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss);
+                                    setTimeout( function(){
+                                    alert( 'Você ganhou em ' + collection[0].countCartasViradas + ' jogadas! Durou \n' + format );
+                                    let final = prompt.toLowerCase;
+                                    if (prompt('Deseja reiniciar a partida? (Responda sim ou não)')  === "sim"){
+                                        collection[0].partidas++
+                                        collection[0].countCartasViradas = 0;
+                                        engine_selecionado[0] = '';
+                                        engine_selecionado[1] = '';
+                                        engine_selecionado[2] = 0;
+                                        cards = [];
+                                        starting_game = false;
+                                        while( !starting_game ){
+                                            ConfigureGame()
+                                        }
+                                        stop();
+                                        Render();
+                                    }}, 1000);  
+                                }
+                            } 
+                            // se as cartas não são iguais
+                            else if ( !(engine_selecionado[0][0] == engine_selecionado[1][0]) ) {
+                                var todasCards = document.querySelectorAll( '.card' );
+                                cards.forEach( (xxx, yyy)=>{
+                                    if ( xxx.virado === false ){
+                                        todasCards.forEach((c)=>{
+                                            if( c.dataset.cid == yyy  ){
+                                                setTimeout( function(){
+                                                    c.querySelector('.flip').style.transform = 'rotateY(0deg)';
+                                                }, 1000)
+                                            }
+                                        })
+                                    } 
+                                    
+                                engine_selecionado[0] = '';
+                                engine_selecionado[1] = '';
+                                engine_selecionado[2] = 0;
+                                } )
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    
+            }
+    
+            card.appendChild( card_flip );
+            card_flip.appendChild( card_back );
+            card_flip.appendChild( card_front );
+            
+            card_front.appendChild( imagem_1 );
+            card_back.appendChild( imagem_2 );
+            dom.appendChild( card );
         }
-
-        card.appendChild( card_flip );
-        card_flip.appendChild( card_back );
-        card_flip.appendChild( card_front );
-        
-        card_front.appendChild( imagem_1 );
-        card_back.appendChild( imagem_2 );
-        dom.appendChild( card );
     })
         
 }
@@ -188,19 +221,26 @@ function Render(){
  */
 function createCard(){
     for ( let i=0;  i < quantidade_cartas/2;  i++ ){
-        var tamanho= 0;  
+        var tamanho= 1;  
         for (var k in collection) {
+            if(collection[k].nome!=undefined){
                 tamanho++;
+            }   
         }
-
-        var x = getRandomInt( 0, tamanho );
+        test(tamanho)
+        var x = getRandomInt( 1, tamanho);
         while(collection[x].inGame){
-            x = getRandomInt( 0, tamanho );
+            x = getRandomInt( 1, tamanho);
         }
             collection[x].inGame = true;
             cards.push({ ...collection[x], virado: false })
             cards.push({ ...collection[x], virado: false })
     }
+    collection.forEach((c)=>{ c.inGame = false
+        if(c.inGame!=undefined){
+            c.inGame = false
+        }
+    });
     cards.sort(comparador);
 }
 
